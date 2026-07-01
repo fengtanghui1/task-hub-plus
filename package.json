@@ -1,0 +1,28 @@
+{
+  "name": "obsidian-task-hub-plus",
+  "version": "0.3.61",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs",
+    "dev:hot": "node scripts/dev-hot-reload.cjs",
+    "test": "jest --runInBand",
+    "typecheck": "tsc --noEmit",
+    "smoke": "npm run build && node scripts/smoke-plugin-runtime.cjs",
+    "release:assets": "npm run build:apple-helper && npm run build && node scripts/prepare-release-assets.cjs",
+    "build:apple-helper": "node scripts/build-apple-helper.cjs",
+    "check:apple-helper": "node scripts/check-apple-helper.cjs",
+    "diagnose:apple": "node scripts/diagnose-local-apple.cjs"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.7",
+    "esbuild": "^0.21.5",
+    "jest": "^29.7.0",
+    "obsidian": "^1.5.12",
+    "ts-jest": "^29.1.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.4.5"
+  }
+}
