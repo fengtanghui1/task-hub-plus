@@ -3400,7 +3400,7 @@ input.task-hub-tag-editor-input:focus {
 }
 
 .task-hub-calendar-day-placeholder {
-  height: clamp(144px, 17vh, 210px);
+  height: clamp(90px, 11vh, 140px);
   pointer-events: none;
 }
 
@@ -3412,7 +3412,7 @@ input.task-hub-tag-editor-input:focus {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  height: clamp(144px, 17vh, 210px);
+  height: clamp(90px, 11vh, 140px);
   min-height: 0;
   overflow: hidden;
   padding: 9px;

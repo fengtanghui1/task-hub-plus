@@ -1,7 +1,7 @@
 {
   "id": "task-hub-plus",
   "name": "Task Hub Plus",
-  "version": "0.3.61",
+  "version": "0.3.62",
   "minAppVersion": "1.7.2",
   "description": "Manage vault, Apple Reminders, Apple Calendar, and Dida/TickTick tasks in one workspace. Fork with no-default-date task creation.",
   "author": "fengtanghui1",
