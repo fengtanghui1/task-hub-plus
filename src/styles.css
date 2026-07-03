@@ -602,20 +602,24 @@
 }
 
 .task-hub-task-workbench.has-filter-sidebar {
-  grid-template-columns: minmax(150px, 180px) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+}
+
+.task-hub-task-right-column {
+  display: grid;
+  gap: 12px;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
 }
 
 .task-hub-task-filter-sidebar {
   align-content: start;
   display: grid;
   gap: 10px;
-  margin-top: var(--task-hub-task-list-first-row-offset);
-  max-height: calc(100vh - 190px - var(--task-hub-task-list-first-row-offset));
+  max-height: none;
   min-width: 0;
-  overflow: visible;
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  overflow: auto;
+  position: relative;
 }
 
 .task-hub-task-filter-card {
@@ -962,24 +966,24 @@ body .task-hub-view button.task-hub-smart-list-apply:focus-visible {
   --task-hub-detail-label-width: 92px;
 }
 
+.task-hub-task-details-host {
+  display: grid;
+  gap: 12px;
+  max-height: calc(100vh - 190px);
+  min-width: 0;
+  overflow-y: auto;
+  position: relative;
+  width: auto;
+  z-index: 0;
+}
+
 .task-hub-task-details {
   align-content: start;
   max-height: calc(100vh - 190px);
   overflow-x: hidden;
   overflow-y: auto;
   resize: none;
-  width: clamp(360px, 29vw, 530px);
-}
-
-.task-hub-task-details-host {
-  display: grid;
-  gap: 12px;
-  margin-top: var(--task-hub-task-list-first-row-offset);
-  max-height: calc(100vh - 190px - var(--task-hub-task-list-first-row-offset));
-  overflow-y: auto;
-  position: relative;
-  width: clamp(280px, 21vw, 400px);
-  z-index: 0;
+  width: auto;
 }
 
 .task-hub-task-details-host .task-hub-task-details {
@@ -1933,6 +1937,37 @@ button.task-hub-task-note-pin.is-active:focus-visible {
   font-weight: 400;
   line-height: 1.25;
   padding: 2px 0 4px;
+}
+
+.task-hub-task-section-header {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  padding: 2px 0 4px;
+}
+
+.task-hub-task-section-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 4px;
+  transition: color 0.15s;
+}
+
+.task-hub-task-section-toggle:hover {
+  color: var(--text-normal);
+}
+
+.task-hub-task-section-header h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.task-hub-task-list-flow.is-collapsed {
+  display: none;
 }
 
 .task-hub-task-list-flow .task-hub-task-row {

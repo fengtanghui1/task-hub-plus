@@ -397,6 +397,7 @@ export type TranslationKey =
   | "tasksIndexed"
   | "thisWeek"
   | "today"
+  | "toggleSection"
   | "tomorrow"
   | "tuesday"
   | "thursday"
@@ -1201,6 +1202,7 @@ const TRANSLATIONS: Record<"en" | "zh", Record<TranslationKey, string>> &
     tasksIndexed: "tasks indexed",
     thisWeek: "This week",
     today: "Today",
+    toggleSection: "Toggle section",
     tomorrow: "Tomorrow",
     tuesday: "Tuesday",
     thursday: "Thursday",
@@ -1591,6 +1593,7 @@ const TRANSLATIONS: Record<"en" | "zh", Record<TranslationKey, string>> &
     tasksIndexed: "个任务已索引",
     thisWeek: "本周",
     today: "今天",
+    toggleSection: "折叠/展开分组",
     tomorrow: "明天",
     tuesday: "周二",
     thursday: "周四",

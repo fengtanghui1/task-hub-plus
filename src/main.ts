@@ -1813,6 +1813,25 @@ export default class TaskHubPlugin extends Plugin {
     await this.saveSettings();
   }
 
+  async toggleTaskBucketCollapse(bucket: string, collapsed: boolean): Promise<void> {
+    const buckets = this.settings.lastSessionState?.collapsedTaskBuckets ?? [];
+    const nextBuckets = collapsed
+      ? buckets.includes(bucket) ? buckets : [...buckets, bucket]
+      : buckets.filter((b) => b !== bucket);
+
+    this.settings.lastSessionState = {
+      ...(this.settings.lastSessionState ?? {
+        view: "tasks",
+        taskViewFilters: this.settings.taskViewFilters,
+        calendarMode: "month",
+        visibleSourceIds: [],
+        unscheduledPanelOpen: false
+      }),
+      collapsedTaskBuckets: nextBuckets
+    };
+    await this.saveSettings();
+  }
+
   getEventNotes(event: CalendarEvent) {
     return this.settings.taskNotes.enabled ? this.taskNoteIndex.getNotesForKey(buildCalendarEventNoteKey(event)) : [];
   }

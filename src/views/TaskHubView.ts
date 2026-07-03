@@ -317,7 +317,9 @@ export class TaskHubView extends ItemView {
             this.pendingExpandedTaskScrollId = isExpanding ? task.id : undefined;
             this.render({ preserveTaskListScroll: true, preserveContentScroll: true });
           },
-          renderNoteMarkdown: (noteContainer, body, sourcePath) => this.renderNoteMarkdown(noteContainer, body, sourcePath)
+          renderNoteMarkdown: (noteContainer, body, sourcePath) => this.renderNoteMarkdown(noteContainer, body, sourcePath),
+          collapsedTaskBuckets: this.plugin.settings.lastSessionState?.collapsedTaskBuckets ?? [],
+          onToggleTaskBucketCollapse: (bucket, collapsed) => void this.plugin.toggleTaskBucketCollapse(bucket, collapsed)
         }
       );
       this.restoreContentScroll(options);

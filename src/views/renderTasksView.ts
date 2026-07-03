@@ -94,6 +94,8 @@ export type TaskRenderOptions = {
   onRenameSmartList?: (smartList: TaskHubSmartList, name: string) => void;
   onSmartListColorChange?: (smartList: TaskHubSmartList, color: string | undefined) => void;
   smartListCounts?: ReadonlyMap<string, number>;
+  collapsedTaskBuckets?: string[];
+  onToggleTaskBucketCollapse?: (bucket: string, collapsed: boolean) => void;
 };
 
 const BUCKETS = ["overdue", "today", "tomorrow", "thisWeek", "future", "noDate", "otherCompleted"] as const;
@@ -157,9 +159,7 @@ export function renderTasksView(
   const selectedTaskIds = normalizedSelectedTaskIds(options, selectedTask);
   const hasSidebar = Boolean(options.filterHandlers || options.smartLists?.length || options.onSaveSmartList);
   const workbench = container.createDiv({ cls: `task-hub-task-workbench ${hasSidebar ? "has-filter-sidebar" : ""}` });
-  if (hasSidebar) {
-    renderTaskSidebar(workbench, filters, options, t);
-  }
+
   const list = workbench.createDiv({
     cls: `task-hub-task-list-pane ${options.animateTaskListTransition ? "task-hub-task-list-pane-transition" : ""}`
   });
@@ -230,12 +230,33 @@ export function renderTasksView(
 
     const section = list.createDiv({ cls: `task-hub-task-section ${shouldRenderEmptyDropTarget ? "is-empty-drop-zone" : ""}` });
     section.setAttr("data-task-bucket", bucket);
-    section.createEl("h3", { text: `${t(bucket)} (${bucketTasks.length})` });
-    const cards = section.createDiv({ cls: "task-hub-task-list-flow" });
+
+    // Collapsible header
+    const isCollapsed = options.collapsedTaskBuckets?.includes(bucket) ?? false;
+    const header = section.createDiv({ cls: "task-hub-task-section-header" });
+    const toggle = header.createEl("button", {
+      cls: "task-hub-task-section-toggle",
+      attr: { "aria-expanded": String(!isCollapsed), "aria-label": t("toggleSection") }
+    });
+    setIcon(toggle, isCollapsed ? "chevron-right" : "chevron-down");
+    header.createEl("h3", { text: `${t(bucket)} (${bucketTasks.length})` });
+
+    const cards = section.createDiv({ cls: `task-hub-task-list-flow ${isCollapsed ? "is-collapsed" : ""}` });
     if (shouldRenderEmptyDropTarget) {
       cards.addClass("is-empty-drop-zone");
     }
     bindTaskListBucketDropTarget(section, bucket, sortedTasks, draggableTaskIds, handlers, now);
+
+    // Toggle collapse on click
+    toggle.addEventListener("click", () => {
+      const collapsed = !cards.hasClass("is-collapsed");
+      cards.toggleClass("is-collapsed", collapsed);
+      setIcon(toggle, collapsed ? "chevron-right" : "chevron-down");
+      toggle.setAttr("aria-expanded", String(!collapsed));
+      if (options.onToggleTaskBucketCollapse) {
+        options.onToggleTaskBucketCollapse(bucket, collapsed);
+      }
+    });
 
     for (const task of bucketTasks) {
       renderTaskTree(
@@ -257,7 +278,16 @@ export function renderTasksView(
     }
   }
   restoreTaskListScroll(list, options);
-  detailsHost = workbench.createDiv({ cls: "task-hub-task-details-host" });
+
+  // Right column: filter sidebar (top) + details (bottom)
+  if (hasSidebar) {
+    const rightColumn = workbench.createDiv({ cls: "task-hub-task-right-column" });
+    renderTaskSidebar(rightColumn, filters, options, t);
+    detailsHost = rightColumn.createDiv({ cls: "task-hub-task-details-host" });
+  } else {
+    detailsHost = workbench.createDiv({ cls: "task-hub-task-details-host" });
+  }
+
   renderTaskDetails(detailsHost, selectedTask, selectedTask ? progressByTaskId.get(selectedTask.id) : undefined, handlers, options, t);
   previousTaskProgressByContainer.set(
     container,

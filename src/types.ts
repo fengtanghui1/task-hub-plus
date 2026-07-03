@@ -75,6 +75,7 @@ export type TaskHubLastSessionState = {
   calendarFocusDate?: string;
   visibleSourceIds: string[];
   unscheduledPanelOpen: boolean;
+  collapsedTaskBuckets?: string[];
 };
 
 export type CalendarEvent = {
