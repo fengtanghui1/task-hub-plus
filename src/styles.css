@@ -602,7 +602,7 @@
 }
 
 .task-hub-task-workbench.has-filter-sidebar {
-  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(150px, 180px) minmax(0, 1fr) auto;
 }
 
 .task-hub-task-filter-sidebar {
@@ -968,7 +968,7 @@ body .task-hub-view button.task-hub-smart-list-apply:focus-visible {
   overflow-x: hidden;
   overflow-y: auto;
   resize: none;
-  width: clamp(420px, 34vw, 620px);
+  width: clamp(360px, 29vw, 530px);
 }
 
 .task-hub-task-details-host {
@@ -978,7 +978,7 @@ body .task-hub-view button.task-hub-smart-list-apply:focus-visible {
   max-height: calc(100vh - 190px - var(--task-hub-task-list-first-row-offset));
   overflow-y: auto;
   position: relative;
-  width: clamp(300px, 24vw, 460px);
+  width: clamp(280px, 21vw, 400px);
   z-index: 0;
 }
 
