@@ -238,8 +238,9 @@ export function renderTasksView(
     const section = list.createDiv({ cls: `task-hub-task-section ${shouldRenderEmptyDropTarget ? "is-empty-drop-zone" : ""}` });
     section.setAttr("data-task-bucket", bucket);
 
-    // Collapsible header
-    const isCollapsed = options.collapsedTaskBuckets?.includes(bucket) ?? false;
+    // Collapsible header: empty buckets auto-collapse (not persisted); user-collapsed buckets stay collapsed
+    const isEmptyBucket = bucketTasks.length === 0;
+    const isCollapsed = isEmptyBucket || (options.collapsedTaskBuckets?.includes(bucket) ?? false);
     const header = section.createDiv({ cls: "task-hub-task-section-header" });
     const toggle = header.createEl("button", {
       cls: "task-hub-task-section-toggle",
@@ -260,7 +261,8 @@ export function renderTasksView(
       cards.toggleClass("is-collapsed", collapsed);
       setIcon(toggle, collapsed ? "chevron-right" : "chevron-down");
       toggle.setAttr("aria-expanded", String(!collapsed));
-      if (options.onToggleTaskBucketCollapse) {
+      // Empty buckets collapse automatically and are not persisted (stay clean after refresh)
+      if (!isEmptyBucket && options.onToggleTaskBucketCollapse) {
         options.onToggleTaskBucketCollapse(bucket, collapsed);
       }
     });
