@@ -609,6 +609,7 @@
   display: grid;
   gap: 12px;
   grid-template-rows: auto minmax(0, 1fr);
+  max-height: calc(100vh - 190px - var(--task-hub-task-list-first-row-offset));
   min-width: 0;
 }
 
@@ -618,7 +619,7 @@
   gap: 10px;
   max-height: none;
   min-width: 0;
-  overflow: auto;
+  overflow: visible;
   position: relative;
 }
 

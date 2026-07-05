@@ -100,16 +100,16 @@ describe("Task Hub styles", () => {
     const workbenchRule = styles.match(/\.task-hub-task-workbench\s*\{(?<body>[^}]+)\}/)?.groups?.body ?? "";
     const mobileRule = styles.match(/@media \(max-width: 720px\)\s*\{(?<body>[\s\S]+?)\n\}/)?.groups?.body ?? "";
 
+    const rightColumnRule = styles.match(/\.task-hub-task-right-column\s*\{(?<body>[^}]+)\}/)?.groups?.body ?? "";
+
     expect(workbenchRule).toContain("--task-hub-task-list-first-row-offset: calc(var(--font-ui-large) * 1.25 + 14px)");
-    expect(sidebarRule).toContain("position: sticky");
+    // Two-column layout: filter sidebar lives in the right column, expands fully without scrolling
+    expect(sidebarRule).toContain("max-height: none");
     expect(sidebarRule).toContain("overflow: visible");
-    expect(sidebarRule).toContain("margin-top: var(--task-hub-task-list-first-row-offset)");
-    expect(sidebarRule).toContain("max-height: calc(100vh - 190px - var(--task-hub-task-list-first-row-offset))");
-    expect(sidebarRule).toContain("z-index: 50");
+    expect(rightColumnRule).toContain("grid-template-rows: auto minmax(0, 1fr)");
+    expect(rightColumnRule).toContain("max-height: calc(100vh - 190px - var(--task-hub-task-list-first-row-offset))");
     expect(paneRule).toContain("position: relative");
     expect(paneRule).toContain("z-index: 0");
-    expect(detailsHostRule).toContain("margin-top: var(--task-hub-task-list-first-row-offset)");
-    expect(detailsHostRule).toContain("max-height: calc(100vh - 190px - var(--task-hub-task-list-first-row-offset))");
     expect(detailsHostRule).toContain("position: relative");
     expect(detailsHostRule).toContain("z-index: 0");
     expect(mobileRule).toContain("--task-hub-task-list-first-row-offset: 0px");
@@ -759,7 +759,8 @@ describe("Task Hub styles", () => {
     expect(sizingRule).toContain("overflow-x: hidden");
     expect(sizingRule).toContain("overflow-y: auto");
     expect(sizingRule).toContain("resize: none");
-    expect(sizingRule).toContain("width: clamp(420px, 34vw, 620px)");
+    // Two-column layout: details panel fills the right column instead of a fixed width
+    expect(sizingRule).toContain("width: auto");
     expect(shellRule).toContain("--task-hub-detail-label-width: 92px");
     expect(actionRule).toContain("grid-template-columns: minmax(0, 1fr)");
     expect(sendButtonRule).toContain("border-radius: 8px");

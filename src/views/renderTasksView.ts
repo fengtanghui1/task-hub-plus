@@ -157,7 +157,7 @@ export function renderTasksView(
   const progressByTaskId = options.showSubtaskProgressBars === false ? new Map<string, TaskProgressInfo>() : allProgressByTaskId;
   let selectedTask = sortedTasks.find((task) => task.id === options.selectedTaskId) ?? sortedTasks.find((task) => !task.completed) ?? sortedTasks[0];
   const selectedTaskIds = normalizedSelectedTaskIds(options, selectedTask);
-  const hasSidebar = Boolean(options.filterHandlers || options.smartLists?.length || options.onSaveSmartList);
+  const hasSidebar = Boolean(options.filterHandlers);
   const workbench = container.createDiv({ cls: `task-hub-task-workbench ${hasSidebar ? "has-filter-sidebar" : ""}` });
 
   const list = workbench.createDiv({
@@ -172,6 +172,13 @@ export function renderTasksView(
     previousTaskProgressByContainer.set(container, new Map());
     list.createDiv({ cls: "task-hub-empty", text: t("noMatchingTasks") });
     restoreTaskListScroll(list, options);
+    // Keep the filter sidebar visible so the user can adjust filters even with no matches
+    if (hasSidebar) {
+      const rightColumn = workbench.createDiv({ cls: "task-hub-task-right-column" });
+      renderTaskSidebar(rightColumn, filters, options, t);
+      const emptyDetailsHost = rightColumn.createDiv({ cls: "task-hub-task-details-host" });
+      renderTaskDetails(emptyDetailsHost, undefined, undefined, handlers, options, t);
+    }
     return;
   }
 
@@ -315,56 +322,6 @@ function renderTaskSidebar(
       options.filterHandlers,
       { bindTagInputSuggest: options.bindTagInputSuggest }
     );
-  }
-
-  const smartLists = sidebar.createDiv({ cls: "task-hub-smart-list-card" });
-  const header = smartLists.createDiv({ cls: "task-hub-smart-list-header" });
-  header.createSpan({ cls: "task-hub-smart-list-title", text: t("smartLists") });
-  const actions = header.createDiv({ cls: "task-hub-smart-list-header-actions" });
-  if (options.activeSmartListId && options.onRemoveTasksFromActiveSmartList) {
-    const remove = actions.createSpan({ cls: "task-hub-smart-list-remove-drop" });
-    remove.setAttr("role", "button");
-    remove.setAttr("tabindex", "0");
-    remove.setAttr("aria-label", t("removeFromSmartListHint"));
-    remove.setAttr("title", t("removeFromSmartListHint"));
-    setIcon(remove, "trash-2");
-    const showHint = () => new Notice(t("removeFromSmartListHint"));
-    remove.addEventListener("click", showHint);
-    remove.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      showHint();
-    });
-    bindActiveSmartListRemoveDropTarget(remove, options, t);
-  }
-  if (options.onSaveSmartList) {
-    const save = actions.createEl("button", { cls: "task-hub-icon-button task-hub-smart-list-save" });
-    save.setAttr("aria-label", t("saveSmartList"));
-    setIcon(save, "plus");
-    save.addEventListener("click", () => {
-      renderSmartListCreateForm(smartLists, options.onSaveSmartList, t);
-    });
-  }
-
-  const list = smartLists.createDiv({ cls: "task-hub-smart-list-items" });
-  const items = options.smartLists ?? [];
-  if (items.length === 0) {
-    list.createDiv({ cls: "task-hub-smart-list-empty", text: t("noSmartLists") });
-    return;
-  }
-
-  for (const smartList of items) {
-    const item = list.createDiv({
-      cls: `task-hub-smart-list-item ${options.activeSmartListId === smartList.id ? "is-active" : ""}`
-    });
-    setCssProps(item, { "--task-hub-smart-list-color": smartList.color ?? "var(--interactive-accent)" });
-    renderSmartListItemContent(item, smartList, options);
-    bindSmartListDropTarget(item, smartList, options, t);
-    item.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      renderSmartListContextMenu(item, event, smartList, options, t);
-    });
   }
 }
 
